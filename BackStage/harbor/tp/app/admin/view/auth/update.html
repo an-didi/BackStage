@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>编辑用户</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{__PLUGINS__}/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{__PLUGINS__}/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{__PLUGINS__}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{__PLUGINS__}/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{__DIST__}/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{__PLUGINS__}/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{__PLUGINS__}/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{__PLUGINS__}/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="/static/adminstatic/layui/css/layui.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Content Wrapper. Contains page content -->
+    <div>
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
+                            <li class="breadcrumb-item active">用户编辑</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">用户编辑</h3>
+                </div>
+            </div>
+            <form role="form" id="quickForm">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="uname">账户</label>
+                        <input type="text" name="uname" class="form-control" id="uname" value="{$info.uname}" readonly>
+                        <!-- 让uid随着post请求传到后端，对修改的角色进行定位 -->
+                        <input type="hidden" name="uid" value="{$info.uid}">
+                    </div>
+                    <div class="form-group">
+                        <label for="role_id">选择角色</label>
+                        <select class="form-control" name="role_id" id="role_id">
+                            {volist name="roles" id="vo"}
+                            <option name="role" value="{$vo.id}" {$vo.id==$info.role_id?'selected':''}>{$vo.title}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status1">状态&nbsp;&nbsp;</label>
+                        <input type="radio" name="status" id="status1" value="1" {$info.status==1?'checked':'';}>启用&nbsp;&nbsp;
+                        <input type="radio" name="status" id="status0" value="0" {$info.status==0?'checked':'';}>禁用
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button type="button" class="btn btn-primary" onclick="update()">确定</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+
+</div>
+<!-- jQuery -->
+<script src="{__PLUGINS__}/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{__PLUGINS__}/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{__DIST__}/js/adminlte.js"></script>
+<!-- layui.js -->
+<script src="/static/adminstatic/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['layer'],function (){
+        layer = layui.layer;
+        $ = layui.jquery;
+    });
+
+    function update(){
+        const role = $('option[selected]');
+        if (role.val() == 1){
+            layer.alert('您没有权限修改超级管理员', {'icon':2, 'title':'警告'});
+            return;
+        }
+        $.post('/auth/update',$('form').serialize(), function(res){
+            if (res.status>0){
+                layer.alert(res.msg, {
+                    'icon': 1
+                });
+                setTimeout(function (){window.location.href='{:url("/auth/index")}';}, 1000);
+            }else{
+                layer.alert(res.msg, {
+                    'icon': 2
+                });
+            }
+        }, 'json');
+
+    }
+</script>
+</body>
+</html>

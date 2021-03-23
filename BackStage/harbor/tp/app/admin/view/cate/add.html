@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>分类新增</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{__PLUGINS__}/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{__PLUGINS__}/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{__PLUGINS__}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{__PLUGINS__}/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{__DIST__}/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{__PLUGINS__}/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{__PLUGINS__}/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{__PLUGINS__}/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="/static/adminstatic/layui/css/layui.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Content Wrapper. Contains page content -->
+    <div>
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
+                            <li class="breadcrumb-item active">分类新增</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">分类新增</h3>
+                </div>
+            </div>
+            <form role="form" id="quickForm">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="catname">分类名称</label>
+                        <input type="text" name="catname" class="form-control" id="catname" placeholder="分类名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="status1">状态&nbsp;&nbsp;</label>
+                        <input type="radio" name="status" id="status1" value="1" checked>启用&nbsp;&nbsp;
+                        <input type="radio" name="status" id="status0" value="0" >禁用
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+
+</div>
+<!-- jQuery -->
+<script src="{__PLUGINS__}/jquery/jquery.min.js"></script>
+<!-- jquery-validation -->
+<script src="{__PLUGINS__}/jquery/jquery.form.min.js"></script>
+<script src="{__PLUGINS__}/jquery-validation/jquery.validate.min.js"></script>
+<script src="{__PLUGINS__}/jquery-validation/additional-methods.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{__PLUGINS__}/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{__DIST__}/js/adminlte.js"></script>
+<!-- layui.js -->
+<script src="/static/adminstatic/layui/layui.js"></script>
+<script type="text/javascript">
+
+    //layui 弹出层
+
+    layui.use(['layer'], function(){
+        layer = layui.layer;
+    });
+
+    $(document).ready(function () {
+        $.validator.setDefaults({
+            submitHandler: function (form) {
+                $(form).ajaxSubmit(
+                    {
+                        url:'/cate/add',
+                        dataType:'json',
+                        type:'POST',
+                        success:function(res){
+                            const catname = $('#catname');
+                            if(res.code>0)
+                            {
+                                layer.alert(res.msg,{icon:6},
+                                    function(index){
+                                        setTimeout(function (){window.location.href='/cate/index'}, 1000);
+                                        layer.close(index);
+                                    })
+                            }else if (res.code<0){
+                                layer.msg(res.msg,{icon:2});
+                                catname.focus();
+                            }else{
+                                layer.msg(res.msg, {icon:5});
+                            }
+                        },
+                        error:function(){
+                            layer.msg('出错啦',{icon:5});
+                        }
+                    }
+                )
+            }
+        });
+        $('#quickForm').validate({
+            rules: {
+                catname:{
+                    required:true,
+                },
+            },
+            messages: {
+                catname: {
+                    required:"请输入分类名称",
+                },
+
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+</body>
+</html>

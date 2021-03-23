@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>文章新增</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{__PLUGINS__}/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{__PLUGINS__}/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{__PLUGINS__}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{__PLUGINS__}/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{__DIST__}/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{__PLUGINS__}/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{__PLUGINS__}/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{__PLUGINS__}/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="/static/adminstatic/layui/css/layui.css">
+    <!-- webuploader -->
+    <link rel="stylesheet" type="text/css" href="/static/adminstatic/uploader/css/webuploader.css">
+    <link rel="stylesheet" type="text/css" href="/static/adminstatic/uploader/examples/image-upload/style.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Content Wrapper. Contains page content -->
+    <div>
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
+                            <li class="breadcrumb-item active">文章新增</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">文章新增</h3>
+                </div>
+            </div>
+            <form role="form" id="quickForm">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="catid">请选择文章分类</label>
+                        <select class="form-control" name="catid" id="catid">
+                            {volist name="info" id="vo"}
+                            <option name="role" value="{$vo.catid}">{$vo.catname}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">文章标题</label>
+                        <input type="text" name="title" class="form-control" id="title" placeholder="请输入文章标题">
+                    </div>
+                    <div class="form-group">
+                        <label>文章内容</label>
+                        <!-- 加载编辑器的容器 -->
+                        <script id="content" name="content" type="text/plain">
+                        </script>
+                    </div>
+
+                    <div class="form-group">
+                        <label>文章封面</label>
+                        <div id="container">
+                            <!--头部，相册选择和格式选择-->
+
+                            <div id="uploader">
+                                <div class="queueList">
+                                    <div id="dndArea" class="placeholder">
+                                        <div id="filePicker"></div>
+                                        <p>或将照片拖到这里，单次最多可选300张</p>
+                                    </div>
+                                </div>
+                                <div class="statusBar" style="display:none;">
+                                    <div class="progress">
+                                        <span class="text">0%</span>
+                                        <span class="percentage"></span>
+                                    </div><div class="info"></div>
+                                    <div class="btns">
+                                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!-- 图片地址的隐藏盒子 -->
+                        <div id="pic"></div>
+                        <label for="status1">状态&nbsp;&nbsp;</label>
+                        <input type="radio" name="status" id="status1" value="1" checked>启用&nbsp;&nbsp;
+                        <input type="radio" name="status" id="status0" value="0" >禁用
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+
+</div>
+<!-- jQuery -->
+<script src="{__PLUGINS__}/jquery/jquery.min.js"></script>
+<!-- jquery-validation -->
+<script src="{__PLUGINS__}/jquery/jquery.form.min.js"></script>
+<script src="{__PLUGINS__}/jquery-validation/jquery.validate.min.js"></script>
+<script src="{__PLUGINS__}/jquery-validation/additional-methods.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{__PLUGINS__}/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{__DIST__}/js/adminlte.js"></script>
+<!-- layui.js -->
+<script src="/static/adminstatic/layui/layui.js"></script>
+<!-- webuploader -->
+<script type="text/javascript" src="/static/adminstatic/uploader/dist/webuploader.js"></script>
+<script type="text/javascript" src="/static/adminstatic/uploader/examples/image-upload/article-upload.js"></script>
+<script type="text/javascript">
+    var BASE_URL = 'static/adminstatic/ uploader/';
+</script>
+<!-- ueditor -->
+<!-- 配置文件 -->
+<script type="text/javascript" src="/static/adminstatic/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/static/adminstatic/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('content');
+</script>
+<script type="text/javascript">
+
+    //layui 弹出层
+
+    layui.use(['layer'], function(){
+        layer = layui.layer;
+    });
+
+    $(document).ready(function () {
+        $.validator.setDefaults({
+            submitHandler: function (form) {
+                const uname = $('input[name="uname"]');
+                $(form).ajaxSubmit(
+                    {
+                        url:'/article/add',
+                        dataType:'json',
+                        type:'POST',
+                        success:function(res){
+                            if(res.code>0)
+                            {
+                                layer.alert(res.msg,{icon:6},
+                                    function(index){
+                                        setTimeout(function (){window.location.href='/article/index'}, 1000);
+                                        layer.close(index);
+                                    })
+                            }else if (res.code<0){
+                                layer.msg(res.msg,{icon:2});
+                                uname.focus();
+                            }else{
+                                layer.msg(res.msg, {icon:5});
+                            }
+                        },
+                        error:function(){
+                            layer.msg('出错啦',{icon:5});
+                        }
+                    }
+                )
+            }
+        });
+        $('#quickForm').validate({
+            rules: {
+                uname:{
+                    required:true,
+                    rangelength:[5,10],
+                },
+
+            },
+            messages: {
+                uname: {
+                    required:"请输入用户名",
+                    rangelength:"用户名为5-10个字符",
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+</body>
+</html>

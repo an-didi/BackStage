@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>港湾新闻</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{__PLUGINS__}/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{__PLUGINS__}/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{__PLUGINS__}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{__PLUGINS__}/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{__DIST__}/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{__PLUGINS__}/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{__PLUGINS__}/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{__PLUGINS__}/summernote/summernote-bs4.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+
+        </ul>
+
+        <!-- SEARCH FORM -->
+        <form class="form-inline ml-3">
+            <div class="input-group input-group-sm">
+                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-navbar" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <!-- Messages Dropdown Menu -->
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="far fa-user"></i>
+                    <span>欢迎您&nbsp;&nbsp;&nbsp;{$session['uname']}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <div href="#" class="dropdown-item">
+                        <!-- Message Start -->
+                        <div class="media">
+                            <img src="{__DIST__}/img/zhao.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                            <div class="media-body">
+                                <a href="{:url('/index/logOut')}" class="nav-link">
+                                    <p class="text-sm text-muted"><i class="fas fa-sign-out-alt mr-2"></i>退出登录</p>
+                                </a>
+                                <!-- href="javascript:;", 一般情况下不想让a标签点击有任何反应jiu在href属性填一个javascript:;就可以了 -->
+                                <a href="javascript:;" class="nav-link" onclick="clearcache(this)">
+                                    <p class="text-sm text-muted"><i class="fas fa-trash mr-2"></i>清除缓存</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Message End -->
+                    </div>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                    <i class="fas fa-th-large"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="index3.html" class="brand-link">
+            <img src="{__DIST__}/img/news_logo.jpg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                 style="opacity: .8">
+            <span class="brand-text font-weight-light">港湾新闻管理系统</span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar user panel (optional) -->
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image">
+                    <img src="{__DIST__}/img/zhao.jpg" class="img-circle elevation-2" alt="User Image">
+                </div>
+                <div class="info">
+                    <a href="#" class="d-block">{$session['uname']}</a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                         with font-awesome or any other icon font library -->
+                    {volist name='rlist' id="vo" key="k"}
+                    <li class="nav-item has-treeview">
+                        <a href="javascript:;" class="nav-link">
+                            <i class="nav-icon fas {if $k%4 == 0} fa-tachometer-alt
+                            {elseif $k%4 == 1} fa-th
+                            {elseif $k%4 == 2} fa-tree
+                            {else /} fa-edit {/if}"></i>
+                            <p>
+                                {$vo.title}
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            {volist name="vo.child" id="cvo" key="key"}
+                            <li class="nav-item">
+                                <a href="/{$cvo.name}" target="iframe" class="nav-link">
+                                    <i class="far fa-circle nav-icon {if $key%3 == 0} text-danger
+                                    {elseif $key%3 == 1} text-warning {else /} text-info {/if}"></i>
+                                    <p>{$cvo.title}</p>
+                                </a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </li>
+                    {/volist}
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content">
+            <iframe src="{:url('/index/welcome')}" name="iframe" frameborder="0" style="width: 100%; height: 100%;" id="iframe" scrolling="yes">
+
+            </iframe>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 3.0.5
+        </div>
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{__PLUGINS__}/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap 4 -->
+<script src="{__PLUGINS__}/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{__DIST__}/js/adminlte.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{__DIST__}/js/demo.js"></script>
+<!-- layui.js -->
+<script src="/static/adminstatic/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['layer'],function (){
+        layer = layui.layer;
+    });
+    // 清除缓存
+    function clearcache(ev){
+        layer.confirm('你确定要清除缓存吗？', {'icon':3, 'title':'提示'},
+            function (index){
+            // console.log('111');
+            $.post({
+                url:'index/clearcache',
+                type:'POST',
+                success: function (res){
+                  if (res.status > 0){
+                      layer.msg(res.msg);
+                  } else{
+                      layer.msg(res.msg);
+                  }
+                }
+            },'json');
+        })
+    }
+    // 设置iframe高度为当前的申请页面的高度
+    $('#iframe').height(window.innerHeight);
+</script>
+</body>
+</html>

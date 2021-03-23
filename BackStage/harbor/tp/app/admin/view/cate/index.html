@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>港湾后台分类管理页面</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{__PLUGINS__}/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{__PLUGINS__}/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{__PLUGINS__}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{__PLUGINS__}/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{__DIST__}/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{__PLUGINS__}/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{__PLUGINS__}/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{__PLUGINS__}/summernote/summernote-bs4.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{__PLUGINS__}/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{__PLUGINS__}/datatables-responsive/css/responsive.bootstrap4.min.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Content Wrapper. Contains page content -->
+    <div>
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">
+                            <small>
+                                <a href="{:url('/cate/add')}" class="btn btn-success"><i class="fas fa-plus mr-2"></i>新增</a>
+                                <a href="{:url('/cate/index')}" class="btn btn-primary"><i class="fas fa-list"></i>列表</a>
+                            </small>
+                        </h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
+                            <li class="breadcrumb-item active">分类管理</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">分类管理</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>名称</th>
+                            <th>创建时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </section>
+    </div>
+
+
+</div>
+<!-- jQuery -->
+<script src="{__PLUGINS__}/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{__PLUGINS__}/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{__DIST__}/js/adminlte.js"></script>
+<!-- DataTables -->
+<script src="{__PLUGINS__}/datatables/jquery.dataTables.min.js"></script>
+<script src="{__PLUGINS__}/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="{__PLUGINS__}/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{__PLUGINS__}/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<!-- layui.js -->
+<script src="/static/adminstatic/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['layer'],function (){
+        layer = layui.layer;
+    });
+    // datatables初始化
+    $(function () {
+        $("#example1").DataTable({
+            "rowId":"catid",
+            "autoWidth": false,
+            // 开启服务端
+            "serverSide": true,
+            // 保存当前页的状态
+            "stateSave":true,
+            "stateDuration":-1,
+            // 异步请求ajax
+            "ajax":{
+                "url":"/cate/index",
+                "type":"POST",
+                "dataType":"JSON",
+                "dataSrc":"tableData"
+            },
+            //对数据的列进行个性化设置,需要与数据的列进行一一对应
+            "columns":[
+                {
+                    "data":"catid",
+                    "name":"编号",
+                },
+                {
+                    "data":"catname",
+                    "name":"分类名称",
+                    "orderable":false,
+                },
+                {
+                    "data":"create_time",
+                    "name":"创建时间",
+                    "orderable": false,
+                },
+                {
+                    "data":"status",
+                    "name":"状态",
+                    "orderable":false,
+                    render:function (data, type, row, meta){
+                        if (row.status > 0){
+                            return "<span>启用</span>";
+                        }else{
+                            return "<span>禁用</span>";
+                        }
+                    }
+                },
+
+            ],
+            "columnDefs":[
+                {
+                    "targets": 4,
+                    "orderable": false,
+                    "render": function (data, type, row, meta){
+                        let html = '';
+                        html += `<a title='编辑' class='btn btn-primary' href="{:url('/cate/update')}?catid=${row.catid}"><i class='nav-icon fas fa-edit'></i></a>`;
+                        html += "&nbsp;&nbsp;";
+                        html += `<a title='删除' class='btn btn-danger' catid=${row.catid} onclick="layer.confirm('删除后无法恢复，确定要删除吗?', {'icon':3, 'title':'提示'}, function (index){delcate('${row.catid}');layer.close(index);});"><i class='nav-icon fas fa-trash-alt'></i></a>`;
+                        return html;
+                    }
+                }
+            ],
+            "language":{
+                "processing": "处理中...",
+                "lengthMenu": "显示 _MENU_ 项结果",
+                "zeroRecords": "没有匹配结果",
+                "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "infoFiltered": "(由 _MAX_ 项结果过滤)",
+                "infoPostFix": "",
+                "search": "搜索:",
+                "searchPlaceholder": "搜索...",
+                "url": "",
+                "emptyTable": "表中数据为空",
+                "loadingRecords": "载入中...",
+                "infoThousands": ",",
+                "paginate": {
+                    "first": "首页",
+                    "previous": "上页",
+                    "next": "下页",
+                    "last": "末页"
+                },
+                "aria": {
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上页",
+                        "next": "下页",
+                        "last": "末页"
+                    },
+                    "sortAscending": "以升序排列此列",
+                    "sortDescending": "以降序排列此列"
+                },
+                "thousands": "."
+            },
+        });
+    });
+
+    // 删除用户
+    function delcate(catid){
+        $.ajax({
+            url: '/cate/del',
+            dataType:'json',
+            type: 'POST',
+            data: {'catid': catid},
+            success: function (e) {
+                // 异步删除成功，页面局部刷新
+                if (e.code > 0) {
+                    layer.msg(e.msg, {
+                        'icon': 1
+                    }, function (){$('#' + catid).remove();});
+                } else {
+                    layer.msg(e.msg, {
+                        'icon': 2
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
