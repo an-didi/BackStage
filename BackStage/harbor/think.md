@@ -113,5 +113,55 @@ return [
 
 [UEditor 手册](http://fex.baidu.com/ueditor/)
 
+## 开启和加载thinkphp的语言包
+
+默认系统会加载默认的语言包，并且不会侦测当前的系统语言，多语言的相关设置再lang.php配置文件中进行设置。
+
+默认语言由default_lang配置参数设置，系统默认设置为：
+
+> 'default_lang' => 'zh_cn',
+
+启动多语言模式，需要在全局中间件中开启多语言加载
+
+middleware.php中的
+
+```php
+return [
+    // 全局请求缓存
+    // \think\middleware\CheckRequestCache::class,
+    // 多语言加载
+     \think\middleware\LoadLangPack::class,
+    // Session初始化
+     \think\middleware\SessionInit::class
+];
+```
+开启语言分组
+
+config文件夹下的lang.php
+
+```php
+return [
+    // 默认语言
+    'default_lang'    => env('lang.default_lang', 'zh-cn'),
+    // 允许的语言列表
+    'allow_lang_list' => ['zh-cn','en-us'],
+    // 多语言自动侦测变量名
+    'detect_var'      => 'lang',
+    // 是否使用Cookie记录
+    'use_cookie'      => true,
+    // 多语言cookie变量
+    'cookie_var'      => 'think_lang',
+    // 多语言header变量
+    'header_var'      => 'think-lang',
+    // 扩展语言包
+    'extend_list'     => [],
+    // Accept-Language转义为对应语言包名称
+    'accept_language' => [
+        'zh-hans-cn' => 'zh-cn',
+    ],
+    // 是否支持语言分组
+    'allow_group'     => true,
+];
+```
 
 

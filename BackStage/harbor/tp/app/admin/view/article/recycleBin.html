@@ -38,17 +38,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">
-                            <small>
-                                <a href="{:url('/article/add')}" class="btn btn-success"><i class="fas fa-plus mr-2"></i>新增</a>
-                                <a href="{:url('/article/recycleBin')}" class="btn btn-primary"><i class="fas fa-trash-restore-alt"></i>回收站</a>
-                            </small>
-                        </h1>
+                        <small>
+                            <a href="{:url('/article/index')}" class="btn btn-success"><i class="fas fa-list"></i>文章列表</a>
+                        </small>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
-                            <li class="breadcrumb-item active">文章管理</li>
+                            <li class="breadcrumb-item active">回收站</li>
                         </ol>
                     </div>
                 </div>
@@ -63,33 +60,33 @@
                 </div>
                 <!-- /.card-header -->
                 <form name="delform" method="post">
-                <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="select-all" id="select-all">
-                            </th>
-                            <th>编号</th>
-                            <th>标题</th>
-                            <th>类别</th>
-                            <th>作者</th>
-                            <th>时间</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th colspan="8">
-                                <input type="submit" class="btn btn-danger" name="sub"
-                                       value="批量回收"
-                                       onclick="if(confirm('移到回收站后将不显示，可以从回收站列表找回？')){document.delform.action='{:url('/article/bulkRecycle')}';document.delform.submit();}else{return false;}">
-                            </th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" name="select-all" id="select-all">
+                                </th>
+                                <th>编号</th>
+                                <th>标题</th>
+                                <th>类别</th>
+                                <th>作者</th>
+                                <th>时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th colspan="8">
+                                    <input type="submit" class="btn btn-primary" name="sub"
+                                           value="批量还原"
+                                           onclick="if(confirm('移到回收站后将不显示，可以从回收站列表找回？')){document.delform.action='{:url('/article/revertAll')}';document.delform.submit();}else{return false;}">
+                                </th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </form>
                 <!-- /.card-body -->
             </div>
@@ -127,7 +124,7 @@
             "stateDuration":-1,
             // 异步请求ajax
             "ajax":{
-                "url":"/article/index",
+                "url":"/article/recycleBin",
                 "type":"POST",
                 "dataType":"JSON",
                 "dataSrc":"tableData"
@@ -135,8 +132,8 @@
             //对数据的列进行个性化设置,需要与数据的列进行一一对应
             "columns":[
                 {
-                  "data":null,
-                  "orderable":false,
+                    "data":null,
+                    "orderable":false,
                 },
                 {
                     "data":"id",
@@ -182,9 +179,9 @@
                     "orderable": false,
                     "render": function (data, type, row, meta){
                         let html = '';
-                        html += `<a title='编辑' class='btn btn-primary' href="{:url('/article/update')}?id=${row.id}"><i class='nav-icon fas fa-edit'></i></a>`;
+                        html += `<a title='还原到文章列表' class='btn btn-primary' id=${row.id} onclick="layer.confirm('移除后列表将不再显示，可以从回收站中找回。确定要移除吗？', {'icon':3, 'title':'提示'}, function (index){recycle('${row.id}','0');layer.close(index);});"><i class='fas fa-recycle'></i></a>`;
                         html += "&nbsp;&nbsp;";
-                        html += `<a title='移到回收站' class='btn btn-danger' id=${row.id} onclick="layer.confirm('移除后列表将不再显示，可以从回收站中找回。确定要移除吗？', {'icon':3, 'title':'提示'}, function (index){recycle('${row.id}',1);layer.close(index);});"><i class='fas fa-recycle'></i></a>`;
+                        html += `<a title='删除' class='btn btn-danger' id=${row.id} onclick="layer.confirm('删除后将无法撤销，确定要删除吗？', {'icon':3, 'title':'提示'}, function (index){del('${row.id}');layer.close(index);});"><i class='fas fa-trash-alt'></i></a>`;
                         return html;
                     }
                 },
@@ -249,6 +246,29 @@
             dataType:'json',
             type: 'POST',
             data: {'id': id, 'type': type},
+            success: function (e) {
+                // 异步删除成功，页面局部刷新
+                if (e.code > 0) {
+                    $('#' + id).remove();
+                    layer.msg('还原成功', {
+                        'icon': 1
+                    });
+                } else {
+                    layer.msg('还原失败', {
+                        'icon': 2
+                    });
+                }
+            }
+        });
+    }
+
+    // 删除文章
+    function del(id) {
+        $.ajax({
+            url: '/article/del',
+            dataType: 'json',
+            type: 'POST',
+            data: {'id': id},
             success: function (e) {
                 // 异步删除成功，页面局部刷新
                 if (e.code > 0) {

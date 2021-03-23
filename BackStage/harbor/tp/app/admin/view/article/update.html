@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>文章新增</title>
+    <title>文章编辑</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome -->
@@ -44,7 +44,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="/index/welcome"><i class="fas fa-home"></i>首页</a></li>
-                            <li class="breadcrumb-item active">文章新增</li>
+                            <li class="breadcrumb-item active">文章编辑</li>
                         </ol>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
         <section class="content">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">文章新增</h3>
+                    <h3 class="card-title">文章编辑</h3>
                 </div>
             </div>
             <form role="form" id="quickForm">
@@ -64,24 +64,34 @@
                     <div class="form-group">
                         <label for="catid">请选择文章分类</label>
                         <select class="form-control" name="catid" id="catid">
-                            {volist name="info" id="vo"}
-                            <option name="role" value="{$vo.catid}">{$vo.catname}</option>
+                            {volist name="cate" id="vo"}
+                            <option name="role" value="{$vo.catid}" {$vo.catid==$info.catid?'selected':'';}>{$vo.catname}</option>
                             {/volist}
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="title">文章标题</label>
-                        <input type="text" name="title" class="form-control" id="title" placeholder="请输入文章标题">
+                        <input type="text" name="title" class="form-control" id="title" placeholder="请输入文章标题" value="{$info.title}">
                     </div>
                     <div class="form-group">
                         <label>文章内容</label>
                         <!-- 加载编辑器的容器 -->
-                        <script id="content" name="content" type="text/plain">
-                        </script>
+                        <textarea id="content" name="content" class="content">
+                            {$info.content}
+                        </textarea>
                     </div>
 
+                    <!-- 原有的封面图渲染, 有封面图就进行渲染，没有就算了 -->
+                    {if $info.cover !== ''}
                     <div class="form-group">
                         <label>文章封面</label>
+                        {volist name="info.cover" id="vo"}
+                        <img src="/storage/{$vo}" alt="封面图" width="100px">
+                        {/volist}
+                    </div>
+                    {/if}
+                    <div class="form-group">
+                        <label>图片上传</label>
                         <div id="container">
                             <!--头部，相册选择和格式选择-->
 
@@ -108,8 +118,9 @@
                         <!-- 图片地址的隐藏盒子 -->
                         <div id="pic"></div>
                         <label for="status1">状态&nbsp;&nbsp;</label>
-                        <input type="radio" name="status" id="status1" value="1" checked>启用&nbsp;&nbsp;
-                        <input type="radio" name="status" id="status0" value="0" >禁用
+                        <input type="radio" name="status" id="status1" value="1" {$info.status>0?'checked':'';}>启用&nbsp;&nbsp;
+                        <input type="radio" name="status" id="status0" value="0" {$info.status>0?'':'checked';}>禁用
+                        <input type="hidden" name="id" value="{$info.id}">
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -160,10 +171,9 @@
     $(document).ready(function () {
         $.validator.setDefaults({
             submitHandler: function (form) {
-                const uname = $('input[name="uname"]');
                 $(form).ajaxSubmit(
                     {
-                        url:'/article/add',
+                        url:'/article/update',
                         dataType:'json',
                         type:'POST',
                         success:function(res){
@@ -174,9 +184,6 @@
                                         setTimeout(function (){window.location.href='/article/index'}, 1000);
                                         layer.close(index);
                                     })
-                            }else if (res.code<0){
-                                layer.msg(res.msg,{icon:2});
-                                uname.focus();
                             }else{
                                 layer.msg(res.msg, {icon:5});
                             }
